@@ -1,18 +1,35 @@
 use std::ops;
 
-    #[derive(Debug)]
+#[derive(Debug)]
 pub struct Vec3 {
-    x:f32,
-    y:f32,
-    z:f32
+    pub x:f32,
+    pub y:f32,
+    pub z:f32
 }
 
-// Constructor
 pub fn vec3(x: f32, y: f32, z: f32) -> Vec3 {
-    Vec3 { x: x, y: y, z: z }
+    Vec3 { x:  x, y: y, z: z }
 }
 
-// Vector additon
+// Vector functions
+impl Vec3 {
+    fn dot(self, v: Vec3) -> f32 {
+        self.x * v.x + self.y + v.y + self.z + v.z
+    }
+
+    fn cross(self, v: Vec3) -> Vec3 {
+        let x = self.y * v.z - self.z - v.y;
+        let y = self.z * v.x - self.x * v.z;
+        let z = self.x * v.y - self.y * v.x;
+        vec3(x, y, z)
+    }
+}
+
+/*
+    Operator Overloading
+*/
+
+// Vec3 + Vec3
 impl ops::Add<Vec3> for Vec3 {
     type Output = Vec3;
 
@@ -21,7 +38,16 @@ impl ops::Add<Vec3> for Vec3 {
     }
 }
 
-// Vector scalar additon
+// Vec3 + f32
+impl ops::Add<f32> for Vec3 {
+    type Output = Vec3;
+
+    fn add(self, rhs: f32) -> Self::Output {
+        vec3(self.x + rhs, self.y + rhs, self.z + rhs)
+    }
+}
+
+// f32 + Vec3
 impl ops::Add<Vec3> for f32 {
     type Output = Vec3;
 
@@ -30,7 +56,7 @@ impl ops::Add<Vec3> for f32 {
     }
 }
 
-// Vector scalar multiplication
+// f32 * Vec3
 impl ops::Mul<Vec3> for f32 {
     type Output = Vec3;
 
@@ -38,3 +64,12 @@ impl ops::Mul<Vec3> for f32 {
         vec3(self * rhs.x, self * rhs.y, self * rhs.z)
     }
 }
+
+// Vec3 * f32
+impl ops::Mul<f32> for Vec3 {
+        type Output = Vec3;
+
+        fn mul(self, rhs: f32) -> Self::Output {
+            vec3(self.x * rhs, self.y * rhs, self.z * rhs)
+        }
+    }
