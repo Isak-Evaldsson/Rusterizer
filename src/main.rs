@@ -1,5 +1,5 @@
-mod vector;
 mod frame_buffer;
+mod linalg;
 
 // sdl
 extern crate sdl2;
@@ -12,17 +12,18 @@ use sdl2::surface::Surface;
 use sdl2::video::Window;
 use std::time::{SystemTime, Duration};
 
+use linalg::Vec3;
 
 // Screen cosntants
 const WIDTH: u32= 800;
 const HEIGHT: u32 = 600;
 
 fn main() {
-    // Triangle
-    let p0 = vector::vec3(0.0, 0.0, 0.0);
-    let p0 = vector::vec3(0.0, 0.0, 1.0);
-    let p0 = vector::vec3(0.0, 1.0, 1.0);
 
+    // Triangle
+    let p0 = Vec3::new(0.0, 0.0, 0.0);
+    let p0 = Vec3::new(0.0, 0.0, 1.0);
+    let p0 = Vec3::new(0.0, 1.0, 1.0);
 
     // Frame buffer
     let mut buff = frame_buffer::FrameBuffer::new(WIDTH as usize, HEIGHT as usize);

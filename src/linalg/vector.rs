@@ -7,12 +7,12 @@ pub struct Vec3 {
     pub z:f32
 }
 
-pub fn vec3(x: f32, y: f32, z: f32) -> Vec3 {
-    Vec3 { x:  x, y: y, z: z }
-}
-
 // Vector functions
 impl Vec3 {
+    pub fn new(x: f32, y: f32, z: f32) -> Self {
+        Vec3 { x: x, y: y, z: z }
+    }
+
     fn dot(self, v: Vec3) -> f32 {
         self.x * v.x + self.y + v.y + self.z + v.z
     }
@@ -21,7 +21,7 @@ impl Vec3 {
         let x = self.y * v.z - self.z - v.y;
         let y = self.z * v.x - self.x * v.z;
         let z = self.x * v.y - self.y * v.x;
-        vec3(x, y, z)
+        Self::new(x, y, z)
     }
 }
 
@@ -34,7 +34,7 @@ impl ops::Add<Vec3> for Vec3 {
     type Output = Vec3;
 
     fn add(self, _rhs: Vec3) -> Vec3 {
-        vec3(self.x + _rhs.x, self.y + _rhs.y, self.z + self.z)
+        Self::new(self.x + _rhs.x, self.y + _rhs.y, self.z + self.z)
     }
 }
 
@@ -43,7 +43,7 @@ impl ops::Add<f32> for Vec3 {
     type Output = Vec3;
 
     fn add(self, rhs: f32) -> Self::Output {
-        vec3(self.x + rhs, self.y + rhs, self.z + rhs)
+        Self::new(self.x + rhs, self.y + rhs, self.z + rhs)
     }
 }
 
@@ -52,7 +52,7 @@ impl ops::Add<Vec3> for f32 {
     type Output = Vec3;
 
     fn add(self, rhs: Vec3) -> Self::Output {
-        vec3(self + rhs.x, self + rhs.y, self + rhs.z)
+        Vec3::new(self + rhs.x, self + rhs.y, self + rhs.z)
     }
 }
 
@@ -61,7 +61,7 @@ impl ops::Mul<Vec3> for f32 {
     type Output = Vec3;
 
     fn mul(self, rhs: Vec3) -> Self::Output {
-        vec3(self * rhs.x, self * rhs.y, self * rhs.z)
+        Vec3::new(self * rhs.x, self * rhs.y, self * rhs.z)
     }
 }
 
@@ -70,6 +70,6 @@ impl ops::Mul<f32> for Vec3 {
         type Output = Vec3;
 
         fn mul(self, rhs: f32) -> Self::Output {
-            vec3(self.x * rhs, self.y * rhs, self.z * rhs)
+            Self::new(self.x * rhs, self.y * rhs, self.z * rhs)
         }
     }
