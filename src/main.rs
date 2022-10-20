@@ -1,4 +1,5 @@
 mod vector;
+mod frame_buffer;
 
 // sdl
 extern crate sdl2;
@@ -9,13 +10,12 @@ use sdl2::keyboard::Keycode;
 use sdl2::render::{Canvas, Texture};
 use sdl2::surface::Surface;
 use sdl2::video::Window;
-use std::time::SystemTime;
+use std::time::{SystemTime, Duration};
 
 
 // Screen cosntants
 const WIDTH: u32= 800;
 const HEIGHT: u32 = 600;
-const PIXEL_PITCH: u32 = 3;
 
 fn main() {
     // Triangle
@@ -25,8 +25,7 @@ fn main() {
 
 
     // Frame buffer
-    let buff_size = (WIDTH * HEIGHT * PIXEL_PITCH) as usize;
-    let mut frame_buffer: Vec<u8> = vec![0; buff_size];
+    let mut buff = frame_buffer::FrameBuffer::new(WIDTH as usize, HEIGHT as usize);
 
     // sdl setup
     let sdl_context = sdl2::init().unwrap();
@@ -46,12 +45,10 @@ fn main() {
 
     let mut event_pump = sdl_context.event_pump().unwrap();
 
+    let time = SystemTime::now();
+
     // drawing loop
     'main: loop {
-        canvas.set_draw_color(Color::RGBA(0, 0, 0, 0));
-        canvas.clear();
-
-
         for event in event_pump.poll_iter() {
             match event {
                 // quit on window exit click
@@ -63,23 +60,24 @@ fn main() {
         }
 
         // Paint some strips verifying working frame buffer
-        for i in 0..WIDTH*HEIGHT {
-            let n = (i * 3) as usize;
-            if (i % 100 > 50) {
-                frame_buffer[n] = 255;
-                frame_buffer[n + 1] = 0;
-                frame_buffer[n + 2] = 0;
+        let t = time.elapsed().ok().unwrap().as_secs();
+
+        for i in 0..buff.size() {
+            if (t % 2 == 0) {
+                buff.set(i, frame_buffer::RGB::rgb(0, 0, 255));
             } else {
-                frame_buffer[n] = 0;
-                frame_buffer[n + 1] = 255;
-                frame_buffer[n + 2] = 0;
+                if (i % 100 > 50) {
+                    buff.set(i, frame_buffer::RGB::rgb(255, 0, 0));
+                } else {
+                    buff.set(i, frame_buffer::RGB::rgb(0, 255, 0));
+                }
             }
         }
 
-        // copy frame buffer into texture
-        texture.with_lock(None, | buff: &mut[u8], _: usize| { buff[..buff_size].copy_from_slice(&frame_buffer)});
+        // Copy frame buffer into texture
+        buff.copy_to_texture(&mut texture);
 
-        // render texture
+        // Render texture
         canvas.copy(&texture, None, None);
         canvas.present();
      }
