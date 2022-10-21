@@ -15,14 +15,14 @@ use std::time::{Duration, SystemTime};
 use linalg::Vec3;
 
 // Screen cosntants
-const WIDTH: u32 = 800;
-const HEIGHT: u32 = 600;
+const WIDTH: u32 = 400;
+const HEIGHT: u32 = 400;
 
 fn main() {
     // Triangle
-    let p0 = Vec3::new(0.0, 0.0, 0.0);
-    let p0 = Vec3::new(0.0, 0.0, 1.0);
     let p0 = Vec3::new(0.0, 1.0, 1.0);
+    let p1 = Vec3::new(1.0, 1.0, 1.0);
+    let p2 = Vec3::new(1.0, 0.0, 1.0);
 
     // Frame buffer
     let mut buff = frame_buffer::FrameBuffer::new(WIDTH as usize, HEIGHT as usize);
@@ -48,10 +48,13 @@ fn main() {
 
     let mut event_pump = sdl_context.event_pump().unwrap();
 
-    let time = SystemTime::now();
+    let mut time = SystemTime::now();
 
     // drawing loop
     'main: loop {
+        println!("ms: {}", time.elapsed().ok().unwrap().as_millis());
+        time = SystemTime::now();
+
         for event in event_pump.poll_iter() {
             match event {
                 // quit on window exit click
@@ -66,19 +69,30 @@ fn main() {
             }
         }
 
-        // Paint some strips verifying working frame buffer
-        let t = time.elapsed().ok().unwrap().as_secs();
+        // Rasterise triangle
+        let mut x = 0.0;
+        let mut y = 0.0;
+        let dx = 1.0/(WIDTH as f32);
+        let dy = 1.0/(HEIGHT as f32);
 
-        for i in 0..buff.size() {
-            if (t % 2 == 0) {
-                buff.set(i, frame_buffer::RGB::rgb(0, 0, 255));
-            } else {
-                if (i % 100 > 50) {
-                    buff.set(i, frame_buffer::RGB::rgb(255, 0, 0));
-                } else {
-                    buff.set(i, frame_buffer::RGB::rgb(0, 255, 0));
+        // edge equations
+        let n_1 = p0.cross(&p1);
+        let n_2 = p2.cross(&p0);
+        let n_3 = p1.cross(&p2);
+
+        for i in 0..(WIDTH as usize) {
+            for j in 0..(HEIGHT as usize) {
+                let p = Vec3::new(x, y, 1.0);
+
+                // edge test
+                if p.dot(&n_1) < 0.0 && p.dot(&n_3) < 0.0 && p.dot(&n_2) < 0.0 {
+                    buff.set(i * (WIDTH as usize) + j, frame_buffer::RGB::rgb(255, 0, 0));
                 }
+
+                x += dx;
             }
+            x = 0.0;
+            y += dy;
         }
 
         // Copy frame buffer into texture
