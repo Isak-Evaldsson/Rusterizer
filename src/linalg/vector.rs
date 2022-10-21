@@ -13,12 +13,12 @@ impl Vec3 {
         Vec3 { x: x, y: y, z: z }
     }
 
-    fn dot(self, v: Vec3) -> f32 {
-        self.x * v.x + self.y + v.y + self.z + v.z
+    pub fn dot(&self, v: &Vec3) -> f32 {
+        self.x * v.x + self.y * v.y + self.z * v.z
     }
 
-    fn cross(self, v: Vec3) -> Vec3 {
-        let x = self.y * v.z - self.z - v.y;
+    pub fn cross(&self, v: &Vec3) -> Vec3 {
+        let x = self.y * v.z - self.z * v.y;
         let y = self.z * v.x - self.x * v.z;
         let z = self.x * v.y - self.y * v.x;
         Self::new(x, y, z)
