@@ -3,6 +3,5 @@ pub struct Mat {
 }
 
 impl Mat {
-    pub fn hello() -> () {
-    }
+    pub fn hello() -> () {}
 }

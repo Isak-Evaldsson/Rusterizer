@@ -2,9 +2,9 @@ use std::ops;
 
 #[derive(Debug)]
 pub struct Vec3 {
-    pub x:f32,
-    pub y:f32,
-    pub z:f32
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
 }
 
 // Vector functions
@@ -67,9 +67,9 @@ impl ops::Mul<Vec3> for f32 {
 
 // Vec3 * f32
 impl ops::Mul<f32> for Vec3 {
-        type Output = Vec3;
+    type Output = Vec3;
 
-        fn mul(self, rhs: f32) -> Self::Output {
-            Self::new(self.x * rhs, self.y * rhs, self.z * rhs)
-        }
+    fn mul(self, rhs: f32) -> Self::Output {
+        Self::new(self.x * rhs, self.y * rhs, self.z * rhs)
     }
+}

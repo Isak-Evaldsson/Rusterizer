@@ -1,0 +1,9 @@
+{
+    "configurations": [
+        {
+            "type": "command",
+            "program": "make",
+            "name": "run",
+        },
+    ]
+}
