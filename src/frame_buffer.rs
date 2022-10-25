@@ -1,4 +1,6 @@
 extern crate sdl2;
+
+#[derive(Copy, Clone)]
 pub struct RGB {
     r: u8,
     g: u8,

@@ -1,9 +1,12 @@
 mod frame_buffer;
 mod linalg;
+mod mesh;
+mod rasterizer;
 
 // sdl
 extern crate sdl2;
 
+use frame_buffer::RGB;
 use sdl2::event::{Event, WindowEvent};
 use sdl2::keyboard::Keycode;
 use sdl2::pixels::{Color, PixelFormatEnum};
@@ -23,6 +26,15 @@ fn main() {
     let p0 = Vec3::new(0.0, 1.0, 1.0);
     let p1 = Vec3::new(1.0, 1.0, 1.0);
     let p2 = Vec3::new(1.0, 0.0, 1.0);
+
+    let p3 = Vec3::new(0.3, 0.7, 1.0);
+    let p4 = Vec3::new(0.7, 0.7, 1.0);
+    let p5 = Vec3::new(0.7, 0.3, 1.0);
+
+    let t1 = mesh::Triangle::new(p0, p1, p2, RGB::rgb(255, 0, 0));
+    let t2 = mesh::Triangle::new(p3, p4, p5, RGB::rgb(0, 255, 0));
+
+    let mesh = mesh::Mesh::new(vec![t1, t2]);
 
     // Frame buffer
     let mut buff = frame_buffer::FrameBuffer::new(WIDTH as usize, HEIGHT as usize);
@@ -69,31 +81,7 @@ fn main() {
             }
         }
 
-        // Rasterise triangle
-        let mut x = 0.0;
-        let mut y = 0.0;
-        let dx = 1.0/(WIDTH as f32);
-        let dy = 1.0/(HEIGHT as f32);
-
-        // edge equations
-        let n_1 = p0.cross(&p1);
-        let n_2 = p2.cross(&p0);
-        let n_3 = p1.cross(&p2);
-
-        for i in 0..(WIDTH as usize) {
-            for j in 0..(HEIGHT as usize) {
-                let p = Vec3::new(x, y, 1.0);
-
-                // edge test
-                if p.dot(&n_1) < 0.0 && p.dot(&n_3) < 0.0 && p.dot(&n_2) < 0.0 {
-                    buff.set(i * (WIDTH as usize) + j, frame_buffer::RGB::rgb(255, 0, 0));
-                }
-
-                x += dx;
-            }
-            x = 0.0;
-            y += dy;
-        }
+        rasterizer::rasterize(&mesh, &mut buff, WIDTH, HEIGHT);
 
         // Copy frame buffer into texture
         buff.copy_to_texture(&mut texture);
