@@ -10,7 +10,7 @@ pub struct Vec3 {
 // Vector functions
 impl Vec3 {
     pub fn new(x: f32, y: f32, z: f32) -> Self {
-        Vec3 { x: x, y: y, z: z }
+        Vec3 { x, y, z }
     }
 
     pub fn dot(&self, v: &Vec3) -> f32 {
@@ -22,6 +22,10 @@ impl Vec3 {
         let y = self.z * v.x - self.x * v.z;
         let z = self.x * v.y - self.y * v.x;
         Self::new(x, y, z)
+    }
+
+    pub fn length(&self) -> f32 {
+        (self.x.powi(2) + self.y.powi(2) + self.z.powi(2)).sqrt()
     }
 }
 
@@ -35,6 +39,15 @@ impl ops::Add<Vec3> for Vec3 {
 
     fn add(self, _rhs: Vec3) -> Vec3 {
         Self::new(self.x + _rhs.x, self.y + _rhs.y, self.z + self.z)
+    }
+}
+
+// Vec3 - Vec3
+impl ops::Sub<Vec3> for Vec3 {
+    type Output = Vec3;
+
+    fn sub(self, _rhs: Vec3) -> Vec3 {
+        Self::new(self.x - _rhs.x, self.y - _rhs.y, self.z - self.z)
     }
 }
 
