@@ -21,6 +21,9 @@ use linalg::Vec3;
 const WIDTH: u32 = 400;
 const HEIGHT: u32 = 400;
 
+// Configuration
+const FPS_COUNTER: bool = false;
+
 fn main() {
     // Triangle
     let p0 = Vec3::new(0.0, 1.0, 1.0);
@@ -64,8 +67,10 @@ fn main() {
 
     // drawing loop
     'main: loop {
-        println!("ms: {}", time.elapsed().ok().unwrap().as_millis());
-        time = SystemTime::now();
+        if FPS_COUNTER {
+            println!("ms: {}", time.elapsed().ok().unwrap().as_millis());
+            time = SystemTime::now();
+        }
 
         for event in event_pump.poll_iter() {
             match event {
