@@ -43,14 +43,29 @@ pub fn rasterize(mesh: &Mesh, buffer: &mut FrameBuffer) {
         let e1 = EdgeFunc::new(p0, p2);
         let e2 = EdgeFunc::new(p1, p0);
 
+        // 1/(2 * triangle area), used for barycentric coords
+        let half_recip_inv = 1.0 / (p1 - p0).cross(&(p2 - p0)).length();
+
         // TODO: Implement more efficient screen traversal (zigzag or tiled maybe?)
         for i in 0..(buffer.width()) {
             for j in 0..(buffer.heigh()) {
                 let p = (x, y);
 
+                // edge equation computation
+                let e0_val = e0.eval(p);
+                let e1_val = e1.eval(p);
+                let e2_val = e2.eval(p);
+
                 // edge test
-                if e0.eval(p) >= 0.0 && e1.eval(p) >= 0.0 && e2.eval(p) >= 0.0 {
-                    buffer.set(i * buffer.width() + j, t.color);
+                if e0_val >= 0.0 && e1_val >= 0.0 && e2_val >= 0.0 {
+                    // barycentric coords
+                    let u = e1_val * half_recip_inv;
+                    let v = e2_val * half_recip_inv;
+
+                    // interpolate depth from barycentrics
+                    let depth = p0.z + u * (p1.z - p0.z) + v * (p2.z - p0.z);
+
+                    buffer.test_and_set(i * buffer.width() + j, t.color, depth);
                 }
 
                 x += dx;
