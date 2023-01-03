@@ -15,7 +15,7 @@ impl RGB {
 
 pub struct FrameBuffer {
     width: usize,
-    heigt: usize,
+    heigh: usize,
     buff_size: usize,
     buffer: Vec<u8>,
 }
@@ -25,14 +25,10 @@ impl FrameBuffer {
         let buff_size = width * height * 3;
         FrameBuffer {
             width: width,
-            heigt: height,
+            heigh: height,
             buff_size: buff_size,
             buffer: vec![0; buff_size],
         }
-    }
-
-    pub fn size(&self) -> usize {
-        self.width * self.heigt
     }
 
     // Todo: overload array operation instead
@@ -44,8 +40,18 @@ impl FrameBuffer {
     }
 
     pub fn copy_to_texture(&self, texture: &mut sdl2::render::Texture) {
-        texture.with_lock(None, |buff: &mut [u8], _: usize| {
-            buff[..self.buff_size].copy_from_slice(&self.buffer)
-        });
+        texture
+            .with_lock(None, |buff: &mut [u8], _: usize| {
+                buff[..self.buff_size].copy_from_slice(&self.buffer)
+            })
+            .unwrap();
+    }
+
+    pub fn heigh(&self) -> usize {
+        self.heigh
+    }
+
+    pub fn width(&self) -> usize {
+        self.width
     }
 }

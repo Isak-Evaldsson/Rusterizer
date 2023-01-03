@@ -1,4 +1,4 @@
-use crate::frame_buffer::{FrameBuffer, RGB};
+use crate::frame_buffer::FrameBuffer;
 use crate::mesh::{Mesh, Vec3};
 
 #[derive(Debug)]
@@ -26,7 +26,7 @@ impl EdgeFunc {
     }
 }
 
-pub fn rasterize(mesh: &Mesh, buffer: &mut FrameBuffer, width: u32, height: u32) {
+pub fn rasterize(mesh: &Mesh, buffer: &mut FrameBuffer) {
     for t in mesh.iter() {
         let p0 = t.p0;
         let p1 = t.p1;
@@ -35,8 +35,8 @@ pub fn rasterize(mesh: &Mesh, buffer: &mut FrameBuffer, width: u32, height: u32)
         // Rasterize triangle
         let mut x = 0.0;
         let mut y = 0.0;
-        let dx = 1.0 / (width as f32);
-        let dy = 1.0 / (height as f32);
+        let dx = 1.0 / (buffer.width() as f32);
+        let dy = 1.0 / (buffer.heigh() as f32);
 
         // Defining edge equations
         let e0 = EdgeFunc::new(p2, p1);
@@ -44,13 +44,13 @@ pub fn rasterize(mesh: &Mesh, buffer: &mut FrameBuffer, width: u32, height: u32)
         let e2 = EdgeFunc::new(p1, p0);
 
         // TODO: Implement more efficient screen traversal (zigzag or tiled maybe?)
-        for i in 0..(width as usize) {
-            for j in 0..(height as usize) {
+        for i in 0..(buffer.width()) {
+            for j in 0..(buffer.heigh()) {
                 let p = (x, y);
 
                 // edge test
                 if e0.eval(p) >= 0.0 && e1.eval(p) >= 0.0 && e2.eval(p) >= 0.0 {
-                    buffer.set(i * (width as usize) + j, t.color);
+                    buffer.set(i * buffer.width() + j, t.color);
                 }
 
                 x += dx;

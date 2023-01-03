@@ -7,19 +7,14 @@ mod rasterizer;
 extern crate sdl2;
 
 use frame_buffer::RGB;
-use sdl2::event::{Event, WindowEvent};
-use sdl2::keyboard::Keycode;
-use sdl2::pixels::{Color, PixelFormatEnum};
-use sdl2::render::{Canvas, Texture};
-use sdl2::surface::Surface;
-use sdl2::video::Window;
-use std::time::{Duration, SystemTime};
-
 use linalg::Vec3;
+use sdl2::event::{Event, WindowEvent};
+use sdl2::pixels::PixelFormatEnum;
+use std::time::SystemTime;
 
-// Screen cosntants
-const WIDTH: u32 = 400;
-const HEIGHT: u32 = 400;
+// Screen constants
+const WIDTH: usize = 400;
+const HEIGHT: usize = 400;
 
 // Configuration
 const FPS_COUNTER: bool = false;
@@ -40,14 +35,14 @@ fn main() {
     let mesh = mesh::Mesh::new(vec![t1, t2]);
 
     // Frame buffer
-    let mut buff = frame_buffer::FrameBuffer::new(WIDTH as usize, HEIGHT as usize);
+    let mut buff = frame_buffer::FrameBuffer::new(WIDTH, HEIGHT);
 
     // sdl setup
     let sdl_context = sdl2::init().unwrap();
     let video_subsysem = sdl_context.video().unwrap();
 
     let window = video_subsysem
-        .window("Rusteriser", WIDTH, HEIGHT)
+        .window("Rusteriser", WIDTH as u32, HEIGHT as u32)
         .position_centered()
         .build()
         .unwrap();
@@ -58,7 +53,7 @@ fn main() {
         .expect("failed to build windows canvas");
     let texture_creator = canvas.texture_creator();
     let mut texture = texture_creator
-        .create_texture_streaming(PixelFormatEnum::RGB24, WIDTH, HEIGHT)
+        .create_texture_streaming(PixelFormatEnum::RGB24, WIDTH as u32, HEIGHT as u32)
         .expect("Could not create texture");
 
     let mut event_pump = sdl_context.event_pump().unwrap();
@@ -86,13 +81,13 @@ fn main() {
             }
         }
 
-        rasterizer::rasterize(&mesh, &mut buff, WIDTH, HEIGHT);
+        rasterizer::rasterize(&mesh, &mut buff);
 
         // Copy frame buffer into texture
         buff.copy_to_texture(&mut texture);
 
         // Render texture
-        canvas.copy(&texture, None, None);
+        canvas.copy(&texture, None, None).unwrap();
         canvas.present();
     }
 }
