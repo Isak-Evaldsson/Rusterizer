@@ -1,5 +1,5 @@
 mod mat;
-mod vector;
+mod vec3;
 
 pub use mat::Mat;
-pub use vector::Vec3;
+pub use vec3::Vec3;
