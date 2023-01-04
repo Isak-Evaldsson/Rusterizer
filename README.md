@@ -9,10 +9,12 @@ I consider it highly unlikley, but if anyone stumbles into this project and want
 
 ## TODO list
 Somewhat order in priority
-1. Perspective projections
-2. Better pixel iteration in rasterizer
-3. Multi-thread rasterizer
-4. Some kind of programable fragment shaders
-5. Support for loading obj files
-6. Make some kind of game
-7. General performance improvements
+* Perspective projection
+* Clipping
+* SIMD acceleration (primarily in vector types)
+* Better pixel iteration in rasterizer
+* Multi-thread rasterizer
+* Some kind of programable fragment shaders (initially compiled with program, maybe in future compiled in runtime like a real graphics driver)
+* Support for loading obj files
+* Make some kind of game
+* General performance improvements
