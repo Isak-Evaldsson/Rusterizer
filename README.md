@@ -16,5 +16,6 @@ Somewhat order in priority
 * Multi-thread rasterizer
 * Some kind of programable fragment shaders (initially compiled with program, maybe in future compiled in runtime like a real graphics driver)
 * Support for loading obj files
+* Optimize matrix multiplication
 * Make some kind of game
 * General performance improvements
