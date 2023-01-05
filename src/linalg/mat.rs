@@ -35,17 +35,17 @@ impl Mat4x4 {
 /*
     Good looking matrix (row, col) accessing
 */
-impl ops::Index<(usize, usize)> for Mat4x4 {
+impl ops::Index<[usize; 2]> for Mat4x4 {
     type Output = f32;
 
-    fn index(&self, i: (usize, usize)) -> &Self::Output {
-        &self.elements[i.0][i.1]
+    fn index(&self, i: [usize; 2]) -> &Self::Output {
+        &self.elements[idx[0]][idx[1]]
     }
 }
 
-impl ops::IndexMut<(usize, usize)> for Mat4x4 {
-    fn index_mut(&mut self, i: (usize, usize)) -> &mut Self::Output {
-        &mut self.elements[i.0][i.1]
+impl ops::IndexMut<[usize; 2]> for Mat4x4 {
+    fn index_mut(&mut self, i: [usize; 2]) -> &mut Self::Output {
+        &mut self.elements[idx[0]][idx[1]]
     }
 }
 
@@ -92,7 +92,7 @@ impl ops::Mul<Mat4x4> for Mat4x4 {
         for i in 0..3 {
             for k in 0..3 {
                 for j in 0..3 {
-                    result[(i, j)] += self[(i, k)] * rhs[(k, j)];
+                    result[[i, j]] += self[[i, k]] * rhs[[k, j]];
                 }
             }
         }
